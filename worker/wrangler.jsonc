@@ -6,9 +6,6 @@
     "enabled": true
   },
   "routes": [
-    {
-      "pattern": "docs.pixfaro.com/*",
-      "zone_name": "pixfaro.com"
-    }
+    { "pattern": "docs.pixfaro.com", "custom_domain": true }
   ]
 }
