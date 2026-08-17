@@ -5,7 +5,7 @@
  *
  * Markdown is converted to HTML at build time and mapped onto the page's
  * design: tables wrapped in <div class="tbl">, HTTP-method badges, section
- * pills, headings demoted one level under the hero <h1>.
+ * chips, codebox accents, headings demoted one level under the hero <h1>.
  *
  * Run: npm run gen   (also runs automatically via `npm run deploy`).
  */
@@ -29,12 +29,20 @@ function renderSection(md, { id, pill }) {
     .replace(/<(\/?)h3>/g, "<$1h4>")
     .replace(/<(\/?)h2>/g, "<$1h3>");
   html = html.replace(/<(\/?)h1>/g, "<$1h2>");
-  // The doc title becomes the section heading: anchor id + brand pill.
-  html = html.replace(/<h2>(.*?)<\/h2>/, `<h2 id="${id}">$1 <span class="pill">${pill}</span></h2>`);
+  // The doc title becomes the section heading: anchor id + kit model chip.
+  html = html.replace(/<h2>(.*?)<\/h2>/, `<h2 id="${id}">$1 <span class="chip model">${pill}</span></h2>`);
   // HTTP-method badges on endpoint headings (e.g. "POST /v1/images/generations").
   html = html.replace(/<h3>(GET|POST|PUT|PATCH|DELETE)(?= )/g, '<h3><span class="method">$1</span>');
-  // Tables scroll inside the card wrapper.
+  // Tables scroll inside the full-bleed wrapper.
   html = html.replace(/<table>/g, '<div class="tbl"><table>').replace(/<\/table>/g, "</table></div>");
+  // Kit codebox accents (ui-mockups-v2 .codebox .a/.c): comment lines gray,
+  // key placeholders (pf_live_…) beam.
+  html = html.replace(/(<pre><code[^>]*>)([\s\S]*?)(<\/code><\/pre>)/g, (_, open, body, close) => {
+    const accented = body
+      .replace(/^([ \t]*(?:#|\/\/)[^\n]*)$/gm, '<span class="c">$1</span>')
+      .replace(/pf_live_[\w…]*/g, '<span class="a">$&</span>');
+    return open + accented + close;
+  });
   return html.trim();
 }
 
