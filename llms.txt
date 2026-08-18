@@ -9,19 +9,20 @@
 - Local MCP (stdio): npx -y @pixfaro/mcp with env PIXFARO_KEY=pf_live_… (Claude Code, Cursor, Windsurf)
 ## Auth
 - API keys (pf_live_…) come from the dashboard at https://pixfaro.com; Authorization: Bearer pf_live_…
-- Scopes: generate (default; images + balance) and full (adds billing, logos, brand-kit)
-- New accounts get $1 free credit; balance is prepaid via Stripe top-ups (no subscription)
+- Scopes: generate (default; image endpoints only) and full (adds balance, billing, logos, brand-kit)
+- New accounts get $1 free credit on email verification (instant for Google/GitHub signups); balance is prepaid via Stripe top-ups (no subscription)
+- Generation requires a verified email (403 email_unverified before that)
 ## Capabilities
 - POST /v1/images/generations {model, prompt, aspect_ratio?, resolution?, overlay?} -> {id: img_…, url, cost, balance_after} — sync, one image per request, hosted URL (never base64)
 - POST /v1/images/edits {model, image: img_…, instruction} -> same shape; omitted aspect_ratio keeps the source's shape; omitted resolution inherits (and bills at) the source's tier
 - GET /v1/models (public) -> [{id, best_for, p50_ms, price, prices per resolution tier, enabled}] — pick by best_for; enabled:false = coming soon
-- GET /v1/balance -> {balance} (USD decimal string)
+- GET /v1/balance -> {balance} (USD decimal string; needs scope full)
 - Overlay branding: "overlay":"default" applies the account's saved brand kit (PUT /v1/brand-kit); or explicit {text|logo_id, position, opacity…}; logos via POST /v1/logos (transparent PNG ≤1MB)
 - Failed generations are never charged (502 body says "charged": false); 402 insufficient_balance includes balance, needed, topup_url
 - MCP tools: generate_image, edit_image, list_models, get_balance — replies carry the hosted URL + cost + remaining balance
 - CLI: npx pixfaro gen "prompt" -a 16:9 -o cover.png ; npx pixfaro models ; npx pixfaro balance ; npx pixfaro edit img_… "instruction"
 ## Limits
-- 60 requests/min per key, 5 keys per account; 429 carries retry_after_s; prompts ≤4000 chars; money always USD decimal strings
+- Fair-use limits on auth/abuse endpoints (429 rate_limited); no fixed per-key cap; prompts ≤4000 chars; money always USD decimal strings
 ## Quickstart
 - MCP: claude mcp add pixfaro -e PIXFARO_KEY=pf_live_… -- npx -y @pixfaro/mcp ; then ask the agent for an image
 - Remote MCP: add https://mcp.pixfaro.com/mcp as a custom connector; OAuth signs you in

@@ -17,9 +17,13 @@ Times are ISO 8601 UTC.
 | API key | `Authorization: Bearer pf_live_…` |
 | MCP | OAuth 2.1 at `https://mcp.pixfaro.com` (remote) or `PIXFARO_KEY` env (stdio) |
 
-Keys are created on the [dashboard](https://pixfaro.com). Scopes: `generate`
-(default — image endpoints + balance) and `full` (adds billing, logos, and
-brand-kit management).
+Keys are created on the [dashboard](https://api.pixfaro.com/dashboard). Scopes:
+`generate` (default — image endpoints only) and `full` (adds balance, billing,
+logos, and brand-kit management).
+
+New accounts must verify their email before generating — unverified calls
+return `403 email_unverified`. The $1 welcome credit lands on verification
+(instantly for Google/GitHub signups).
 
 ## POST /v1/images/generations
 
@@ -52,14 +56,14 @@ carries base64).
 ```json
 {
   "id": "img_8f2a…", "url": "https://api.pixfaro.com/i/…", "model": "nano-banana-2",
-  "resolution": "1K", "latency_ms": 10400, "cost": "0.081", "balance_after": "12.32",
+  "resolution": "1K", "latency_ms": 10400, "cost": "0.080", "balance_after": "12.32",
   "overlay_applied": false, "request_id": "rq_a1c4f0"
 }
 ```
 
 **Errors:** `402 insufficient_balance` (body includes `balance`, `needed`,
 `topup_url`), `400 invalid_model` / `invalid_prompt` / `invalid_request`,
-`409 model_disabled`, `429 rate_limited` (+ `retry_after_s`),
+`403 email_unverified`, `409 model_disabled`, `429 rate_limited`,
 `502 provider_failed` — **no charge**, and the body says so explicitly:
 `"charged": false`.
 
@@ -72,7 +76,9 @@ Brands a corner of the image with your handle or logo. Exactly one of `text`
 { "overlay": { "text": "@yourbrand", "position": "bottom-right", "opacity": 0.9 } }
 ```
 
-Optional: `position` (default `bottom-right`), `opacity` (0.2–1.0), `size`,
+Optional: `position` (default `bottom-right`), `opacity` (0.2–1.0; text
+defaults to 0.9, logos to 1.0), `logo_style` (`sticker` — default — | `shadow`
+| `outline` | `none`), `size`,
 `margin`, and for text `font` / `weight` / `color` (`"auto"` picks ink or paper
 per corner brightness). Save your defaults once via `PUT /v1/brand-kit`, then
 `"overlay": "default"` everywhere. A bad overlay fails the request **before**
@@ -112,6 +118,8 @@ returns `409 model_disabled`).
 
 ## GET /v1/balance
 
+Requires scope `full` (a default `generate` key gets `403 insufficient_scope`).
+
 ```json
 { "balance": "12.32" }
 ```
@@ -122,23 +130,25 @@ returns `409 model_disabled`).
 |---|---|
 | `POST /v1/topups` | `{ "amount_usd": 25 }` → `{ "checkout_url": … }` (Stripe; integer 5–1000, default 10) |
 | `GET/PATCH /v1/autoreload` | auto top-up: `{ enabled, threshold, amount, monthly_cap }` — explicit opt-in |
-| `POST /v1/logos` | upload a transparent PNG (≤ 1 MB, ≤ 2048px/side, ≤ 10 live logos) — raw body or multipart |
+| `POST /v1/logos` | upload a transparent PNG (≤ 1 MB, ≤ 2048px/side, ≤ 10 live logos) — raw binary body, or JSON `{ "image": "<base64 or data URI>", "name"? }` |
 | `GET /v1/logos` · `DELETE /v1/logos/:id` | list / remove logos |
 | `GET/PUT/DELETE /v1/brand-kit` | saved overlay defaults used by `"overlay": "default"` |
 
-Top-ups, keys, and usage are also on the [dashboard](https://pixfaro.com/dashboard).
+Top-ups, keys, and usage are also on the [dashboard](https://api.pixfaro.com/dashboard).
 
 ## POST /v1/abuse-reports
 
 Public, no auth — report a generated image that violates our
 [acceptable use policy](https://pixfaro.com/acceptable-use):
 `{ "image_url", "reason", "details"?, "reporter_email"? }` — `image_url` must
-be a Pixfaro-served image link (`…/i/…`).
+be a Pixfaro-served image link (`…/i/…`); `reason` is one of `csam`,
+`nonconsensual`, `violence_hate`, `infringement`, `other`.
 
 ## Rate limits
 
-Per key: 60 requests/min. Per account: 5 keys. `429` responses carry
-`retry_after_s`. Need more? Ask — limits are raised case-by-case.
+Fair-use limits apply on auth and abuse-prone endpoints (`429 rate_limited`).
+There is no fixed per-key request cap today; sustained high volume is welcome —
+talk to us if you're planning a big batch.
 
 ## Versioning
 

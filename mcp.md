@@ -37,10 +37,10 @@ connector with URL `https://mcp.pixfaro.com/mcp`.
 
 | Tool | What it does |
 |---|---|
-| `generate_image` | prompt (+ optional `model`, `aspect_ratio`) → hosted image URL, with cost and remaining balance in the reply |
-| `edit_image` | natural-language edit of a previous generation by its `img_…` id |
+| `generate_image` | prompt (+ optional `model`, `aspect_ratio`, `resolution`, `overlay` — incl. `"default"` for your saved brand kit) → hosted image URL, with cost and remaining balance in the reply |
+| `edit_image` | natural-language edit of a previous generation by its `img_…` id (keeps the source's shape unless you pass `aspect_ratio`) |
 | `list_models` | live models with price, latency, and what each is best for |
-| `get_balance` | current prepaid balance |
+| `get_balance` | current prepaid balance — needs scope `full` (stdio: a full-scope key; remote OAuth grants `generate` by default) |
 
 Replies are agent-readable text carrying a hosted URL — never base64, so your
 agent's context stays small. When the balance runs low, replies append a
