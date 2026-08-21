@@ -115,11 +115,14 @@ ${PAGE_CSS}</style></head><body>
 
 ${BODY}
 </div>
+<!-- Footer canon = pixfaro.com (platform repo apps/marketing footer(), design/landing-mockup.html):
+     Product and Company columns are IDENTICAL there; the "Docs" column is this site's own nav, standing in for
+     marketing's "Use cases". Change both together (DAS-240). -->
 <footer><div class="wrap cols">
 <div><span class="wm" style="color:#FDFDFB"><b>pix</b>faro</span><p style="font-size:12.5px;color:#E8EAED80;margin-top:10px;max-width:240px">Every image model, one port.<br>She Just Works LLC</p></div>
 <div><span class="h">Docs</span><a href="#api">REST API</a><a href="#mcp">MCP server</a><a href="/llms.txt">llms.txt</a><a href="https://github.com/pixfaro/docs">Source</a></div>
-<div><span class="h">Product</span><a href="https://pixfaro.com/models">Models</a><a href="https://pixfaro.com/pricing">Pricing</a><a href="https://pixfaro.com/dashboard">Dashboard</a><a href="https://github.com/pixfaro/mcp">GitHub</a></div>
-<div><span class="h">Legal</span><a href="https://pixfaro.com/terms">Terms of Service</a><a href="https://pixfaro.com/privacy">Privacy Policy</a><a href="https://pixfaro.com/acceptable-use">Acceptable Use</a></div>
+<div><span class="h">Product</span><a href="https://pixfaro.com/models">Models</a><a href="https://pixfaro.com/pricing">Pricing</a><a href="https://mcp.pixfaro.com">MCP server</a><a href="#mcp">CLI</a><a href="https://pixfaro.com/status">Status</a><a href="https://pixfaro.com/dashboard">Dashboard</a></div>
+<div><span class="h">Company</span><a href="https://docs.pixfaro.com">Docs</a><a href="https://github.com/pixfaro">GitHub</a><a href="mailto:support@pixfaro.com">support@pixfaro.com</a><span style="display:block;margin-top:8px"><a href="https://pixfaro.com/terms" style="display:inline">Terms</a> · <a href="https://pixfaro.com/privacy" style="display:inline">Privacy</a> · <a href="https://pixfaro.com/acceptable-use" style="display:inline">Acceptable Use</a></span></div>
 </div></footer>
 <script>(()=>{const links=[...document.querySelectorAll('.nav .links a[href^="#"]')];const secs=links.map(a=>document.getElementById(a.hash.slice(1))).filter(Boolean);if(!secs.length)return;const sync=()=>{let cur="";for(const s of secs)if(s.getBoundingClientRect().top<=90)cur=s.id;for(const a of links)a.classList.toggle("on",a.hash.slice(1)===cur)};addEventListener("scroll",sync,{passive:true});addEventListener("hashchange",sync);sync()})()</script>
 </body></html>`;
