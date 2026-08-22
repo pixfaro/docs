@@ -62,7 +62,7 @@ take **only** Pixfaro-hosted references:
 |---|---|
 | `"ast_…"` or `{ "asset": "ast_…" }` | an asset you uploaded (`POST /v1/assets`) |
 | `"https://api.pixfaro.com/i/…"` | one of your own generated images |
-| `"data:image/png;base64,…"` | inline, ≤ 2 MB |
+| `"data:image/png;base64,…"` | inline PNG or JPEG, ≤ 2 MB — validated as an image, not as a string |
 | `"default"` | from your brand identity (`PUT /v1/brand-kit/identity`) |
 
 Arbitrary URLs are refused: the renderer is a real browser, and a fetchable
