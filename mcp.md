@@ -39,7 +39,10 @@ connector with URL `https://mcp.pixfaro.com/mcp`.
 |---|---|
 | `generate_image` | prompt (+ optional `model`, `aspect_ratio`, `resolution`, `overlay` — incl. `"default"` for your saved brand kit) → hosted image URL, with cost and remaining balance in the reply |
 | `edit_image` | natural-language edit of a previous generation by its `img_…` id (keeps the source's shape unless you pass `aspect_ratio`) |
+| `render_template` | typeset card from a template — slots in, hosted PNG out (flat $0.02, ~2s); sharper type than any model, and cheaper |
+| `upload_asset` | store a PNG/JPEG (≤ 5 MB) and get an `ast_…` id to pass into a card slot |
 | `list_models` | live models with price, latency, and what each is best for |
+| `list_templates` | card templates with their slots, style axes and exact price |
 | `get_balance` | current prepaid balance — needs scope `full` (stdio: a full-scope key; remote OAuth grants `generate` by default) |
 
 Replies are agent-readable text carrying a hosted URL — never base64, so your
