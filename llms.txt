@@ -2,6 +2,7 @@
 > Every image model behind one API and one MCP: your agent asks for an image; Pixfaro holds the provider accounts, keys, retries and format differences, and bills one prepaid balance.
 ## Docs
 - REST API: https://docs.pixfaro.com/api
+- Card templates: https://docs.pixfaro.com/templates
 - MCP: https://docs.pixfaro.com/mcp
 ## Endpoints
 - API base: https://api.pixfaro.com
@@ -19,7 +20,12 @@
 - GET /v1/balance -> {balance} (USD decimal string; needs scope full)
 - Overlay branding: "overlay":"default" applies the account's saved brand kit (PUT /v1/brand-kit); or explicit {text|logo_id, position, opacity…}; logos via POST /v1/logos (transparent PNG ≤1MB)
 - Failed generations are never charged (502 body says "charged": false); 402 insufficient_balance includes balance, needed, topup_url
-- MCP tools: generate_image, edit_image, list_models, get_balance — replies carry the hosted URL + cost + remaining balance
+- POST /v1/renders {template, slots, size?, style?, scale?, overlay?} -> {id: img_…, url, kind: "render", template, style, cost} — TYPESET cards (quote-card, post-card), flat $0.020, ~2s, sharp type; a render is a generation (same history, same refund rules)
+- GET /v1/templates (public) -> [{id, tier, price, sizes, slots:[{name,type,required,max}], styles:{palettes,fonts,layouts,shadow}}] — build a form from this
+- Card slots: text is rejected past its max (never truncated); image slots take ONLY ast_… ids, your own /i/ URLs, data URIs <=2MB, or "default" (brand identity) — arbitrary URLs are refused
+- style: omit for the default, "auto" (random, avoids your last combo on that template), "brand" (your saved palette), or {palette,font,layout,shadow}
+- POST /v1/assets {kind: avatar|logo|photo|image, data} -> {id: ast_…} (scope full; PNG/JPEG <=5MB); PUT /v1/brand-kit/identity {name,handle,avatar_asset_id,palette} powers "default" slots
+- MCP tools: generate_image, edit_image, render_template, upload_asset, list_models, list_templates, get_balance — replies carry the hosted URL + cost + remaining balance
 - CLI: npx pixfaro gen "prompt" -a 16:9 -o cover.png ; npx pixfaro models ; npx pixfaro balance ; npx pixfaro edit img_… "instruction"
 ## Limits
 - Fair-use limits on auth/abuse endpoints (429 rate_limited); no fixed per-key cap; prompts ≤4000 chars; money always USD decimal strings

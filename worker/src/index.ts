@@ -101,7 +101,7 @@ const PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <style>${TOKENS_CSS}
 ${PAGE_CSS}</style></head><body>
 <div class="nav"><a class="brand" href="https://pixfaro.com" aria-label="Pixfaro home"><span class="wm"><b>pix</b>faro</span></a>
-<nav class="links"><a href="#api">REST API</a><a href="#mcp">MCP</a><a href="https://github.com/pixfaro/mcp">GitHub</a><a href="https://pixfaro.com/dashboard">Dashboard</a><a class="btn pri" href="https://api.pixfaro.com/signup">Start free — $1 credit</a></nav></div>
+<nav class="links"><a href="#api">REST API</a><a href="#templates">Cards</a><a href="#mcp">MCP</a><a href="https://github.com/pixfaro/mcp">GitHub</a><a href="https://pixfaro.com/dashboard">Dashboard</a><a class="btn pri" href="https://api.pixfaro.com/signup">Start free — $1 credit</a></nav></div>
 <div class="wrap hero">
 <div class="seclbl">Developer Docs</div>
 <h1>Pixfaro API &amp; MCP</h1>
@@ -120,7 +120,7 @@ ${BODY}
      marketing's "Use cases". Change both together (DAS-240). -->
 <footer><div class="wrap cols">
 <div><span class="wm" style="color:#FDFDFB"><b>pix</b>faro</span><p style="font-size:12.5px;color:#E8EAED80;margin-top:10px;max-width:240px">Every image model, one port.<br>She Just Works LLC</p></div>
-<div><span class="h">Docs</span><a href="#api">REST API</a><a href="#mcp">MCP server</a><a href="/llms.txt">llms.txt</a><a href="https://github.com/pixfaro/docs">Source</a></div>
+<div><span class="h">Docs</span><a href="#api">REST API</a><a href="#templates">Card templates</a><a href="#mcp">MCP server</a><a href="/llms.txt">llms.txt</a><a href="https://github.com/pixfaro/docs">Source</a></div>
 <div><span class="h">Product</span><a href="https://pixfaro.com/models">Models</a><a href="https://pixfaro.com/pricing">Pricing</a><a href="https://mcp.pixfaro.com">MCP server</a><a href="#mcp">CLI</a><a href="https://pixfaro.com/status">Status</a><a href="https://pixfaro.com/dashboard">Dashboard</a></div>
 <div><span class="h">Company</span><a href="https://docs.pixfaro.com">Docs</a><a href="https://github.com/pixfaro">GitHub</a><a href="mailto:support@pixfaro.com">support@pixfaro.com</a><span style="display:block;margin-top:8px"><a href="https://pixfaro.com/terms" style="display:inline">Terms</a> · <a href="https://pixfaro.com/privacy" style="display:inline">Privacy</a> · <a href="https://pixfaro.com/acceptable-use" style="display:inline">Acceptable Use</a></span></div>
 </div></footer>
@@ -131,7 +131,12 @@ export default {
   async fetch(req: Request): Promise<Response> {
     const url = new URL(req.url);
     if (url.pathname === "/llms.txt") return new Response(LLMS, { headers: { "content-type": "text/plain; charset=utf-8" } });
-    if (url.pathname === "/api" || url.pathname === "/mcp") return Response.redirect("https://docs.pixfaro.com/#" + url.pathname.slice(1), 302);
+    // Section shortcuts: /api, /templates, /mcp — plus /fonts, which is the
+    // licence list inside the templates section (DAS-249), not its own page.
+    if (["/api", "/templates", "/mcp"].includes(url.pathname)) {
+      return Response.redirect("https://docs.pixfaro.com/#" + url.pathname.slice(1), 302);
+    }
+    if (url.pathname === "/fonts") return Response.redirect("https://docs.pixfaro.com/#fonts", 302);
     return new Response(PAGE, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=300" } });
   },
 } satisfies ExportedHandler;

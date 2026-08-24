@@ -116,6 +116,25 @@ Public, no auth. Cached ~5 min.
 retail price. `enabled: false` marks models that are coming soon (calling one
 returns `409 model_disabled`).
 
+## POST /v1/renders
+
+Typeset a card from a template instead of generating one — flat $0.02, ~2s,
+sharp type. Full reference: [Card templates](#templates).
+
+```bash
+curl https://api.pixfaro.com/v1/renders -H "Authorization: Bearer pf_live_…" \
+  -H "Content-Type: application/json" \
+  -d '{"template":"quote-card","slots":{"quote":"Ship it.","handle":"@you"},"style":"auto"}'
+```
+
+A render is a generation: it returns an `img_…`, lands in your history, and is
+debited and refunded by the same rules.
+
+## GET /v1/templates
+
+Public, no auth — the card catalog with slots, style axes and price. See
+[Card templates](#templates).
+
 ## GET /v1/balance
 
 Requires scope `full` (a default `generate` key gets `403 insufficient_scope`).
@@ -133,6 +152,9 @@ Requires scope `full` (a default `generate` key gets `403 insufficient_scope`).
 | `POST /v1/logos` | upload a transparent PNG (≤ 1 MB, ≤ 2048px/side, ≤ 10 live logos) — raw binary body, or JSON `{ "image": "<base64 or data URI>", "name"? }` |
 | `GET /v1/logos` · `DELETE /v1/logos/:id` | list / remove logos |
 | `GET/PUT/DELETE /v1/brand-kit` | saved overlay defaults used by `"overlay": "default"` |
+| `POST /v1/assets` | upload a PNG/JPEG (≤ 5 MB, ≤ 4096px/side, ≤ 100 live) for card slots — raw binary with `?kind=`, or JSON `{ "kind", "data" }` |
+| `GET /v1/assets` · `DELETE /v1/assets/:id` | list / remove assets |
+| `GET/PUT/DELETE /v1/brand-kit/identity` | name, handle, avatar and palette — what `"default"` resolves to in a card slot |
 
 Top-ups, keys, and usage are also on the [dashboard](https://api.pixfaro.com/dashboard).
 
