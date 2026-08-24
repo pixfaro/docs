@@ -10,14 +10,41 @@ One MCP connection gives your agent every major image model. Two ways in:
 Source: [github.com/pixfaro/mcp](https://github.com/pixfaro/mcp) — the client is
 intentionally small enough to read before you hand it a key.
 
-## Setup
+## Setup — no terminal needed
+
+The remote server is the easiest path on every desktop app: paste one URL,
+sign in with your Pixfaro account in the browser window that opens, done. No
+API key ends up in any config file.
+
+**Claude** (claude.ai, Claude Desktop — any plan):
+1. **Settings → Connectors → Add custom connector**
+2. URL: `https://mcp.pixfaro.com/mcp` → **Add** → sign in when prompted.
+   On Team/Enterprise an org Owner adds it once for everyone
+   (**Organization settings → Connectors → Custom → Web**).
+
+**Cursor** — one click:
+
+[**Add to Cursor →**](https://cursor.com/install-mcp?name=pixfaro&config=eyJ1cmwiOiJodHRwczovL21jcC5waXhmYXJvLmNvbS9tY3AifQ%3D%3D)
+
+or by hand: **Cursor Settings → MCP → Add new MCP server**, type **URL**,
+address `https://mcp.pixfaro.com/mcp` — Cursor runs the OAuth flow itself.
+
+**ChatGPT** (Pro / Plus / Business / Edu):
+1. **Settings → toggle Developer mode on** (since the July 2026 rename the
+   connector list lives under **Plugins**; before that it was
+   **Connectors → Advanced**)
+2. Add a custom connector: name `pixfaro`, URL `https://mcp.pixfaro.com/mcp`,
+   transport *streamable HTTP*, authentication *OAuth* → sign in.
+
+## Setup — command line & config files
 
 **Claude Code:**
 ```bash
 claude mcp add pixfaro -e PIXFARO_KEY=pf_live_… -- npx -y @pixfaro/mcp
 ```
 
-**Cursor / Windsurf / Claude Desktop** (config file):
+**Windsurf or any stdio client** (config file; key from the
+[dashboard](https://api.pixfaro.com/dashboard)):
 ```json
 {
   "mcpServers": {
@@ -30,8 +57,11 @@ claude mcp add pixfaro -e PIXFARO_KEY=pf_live_… -- npx -y @pixfaro/mcp
 }
 ```
 
-**claude.ai / Claude Desktop connector (remote, no key in a file):** add custom
-connector with URL `https://mcp.pixfaro.com/mcp`.
+Clients that speak streamable HTTP can also use the remote form in the same
+file — no key, OAuth on first use:
+```json
+{ "mcpServers": { "pixfaro": { "url": "https://mcp.pixfaro.com/mcp" } } }
+```
 
 ## Tools
 
