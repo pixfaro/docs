@@ -93,8 +93,15 @@ const PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pixfaro — Developer Docs (Image Generation API & MCP)</title>
 <meta name="description" content="REST API + MCP server reference for Pixfaro: every image model behind one endpoint, one key, one prepaid balance.">
+<link rel="canonical" href="https://docs.pixfaro.com/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Pixfaro">
+<meta property="og:url" content="https://docs.pixfaro.com/">
 <meta property="og:title" content="Pixfaro Developer Docs">
 <meta property="og:description" content="Image generation API + MCP server reference — every major model, one key, one prepaid balance.">
+<meta property="og:image" content="https://pixfaro.com/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Pixfaro — every image model, one port">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Pixfaro Developer Docs"><meta name="twitter:description" content="Image generation API + MCP server reference — every major model, one key, one prepaid balance."><meta name="twitter:image" content="https://pixfaro.com/og.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Pixfaro Developer Docs","url":"https://docs.pixfaro.com/","publisher":{"@type":"Organization","name":"Pixfaro","url":"https://pixfaro.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Pixfaro","item":"https://pixfaro.com/"},{"@type":"ListItem","position":2,"name":"Developer Docs","item":"https://docs.pixfaro.com/"}]}</script>
 <link rel="icon" type="image/svg+xml" href="${FAVICON_DATA_URI}">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -119,7 +126,7 @@ ${BODY}
      Product and Company columns are IDENTICAL there; the "Docs" column is this site's own nav, standing in for
      marketing's "Use cases". Change both together (DAS-240). -->
 <footer><div class="wrap cols">
-<div><span class="wm" style="color:#FDFDFB"><b>pix</b>faro</span><p style="font-size:12.5px;color:#E8EAED80;margin-top:10px;max-width:240px">Every image model, one port.<br>She Just Works LLC</p></div>
+<div><a class="wm" href="https://pixfaro.com" aria-label="Pixfaro home" style="color:#FDFDFB;display:inline-block;margin-top:0;text-decoration:none"><b>pix</b>faro</a><p style="font-size:12.5px;color:#E8EAED80;margin-top:10px;max-width:240px">Every image model, one port.<br>She Just Works LLC</p></div>
 <div><span class="h">Docs</span><a href="#api">REST API</a><a href="#templates">Card templates</a><a href="#mcp">MCP server</a><a href="/llms.txt">llms.txt</a><a href="https://github.com/pixfaro/docs">Source</a></div>
 <div><span class="h">Product</span><a href="https://pixfaro.com/models">Models</a><a href="https://pixfaro.com/pricing">Pricing</a><a href="https://mcp.pixfaro.com">MCP server</a><a href="#mcp">CLI</a><a href="https://pixfaro.com/status">Status</a><a href="https://pixfaro.com/dashboard">Dashboard</a></div>
 <div><span class="h">Company</span><a href="https://docs.pixfaro.com">Docs</a><a href="https://github.com/pixfaro">GitHub</a><a href="mailto:support@pixfaro.com">support@pixfaro.com</a><span style="display:block;margin-top:8px"><a href="https://pixfaro.com/terms" style="display:inline">Terms</a> · <a href="https://pixfaro.com/privacy" style="display:inline">Privacy</a> · <a href="https://pixfaro.com/acceptable-use" style="display:inline">Acceptable Use</a></span></div>
@@ -137,6 +144,21 @@ export default {
       return Response.redirect("https://docs.pixfaro.com/#" + url.pathname.slice(1), 302);
     }
     if (url.pathname === "/fonts") return Response.redirect("https://docs.pixfaro.com/#fonts", 302);
+    // SEO plumbing: robots + a one-URL sitemap, and unknown paths 301 home —
+    // before this, EVERY path (robots.txt included) served the page as a 200,
+    // which reads as infinite duplicate URLs to a crawler.
+    if (url.pathname === "/robots.txt") {
+      return new Response("User-agent: *\nAllow: /\n\nSitemap: https://docs.pixfaro.com/sitemap.xml\n", {
+        headers: { "content-type": "text/plain; charset=utf-8" },
+      });
+    }
+    if (url.pathname === "/sitemap.xml") {
+      return new Response(
+        `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://docs.pixfaro.com/</loc></url></urlset>`,
+        { headers: { "content-type": "application/xml" } },
+      );
+    }
+    if (url.pathname !== "/") return Response.redirect("https://docs.pixfaro.com/", 301);
     return new Response(PAGE, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=300" } });
   },
 } satisfies ExportedHandler;
