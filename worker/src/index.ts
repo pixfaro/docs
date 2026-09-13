@@ -80,7 +80,7 @@ th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--ink-faint);
 th{color:var(--ink-muted);font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:500;padding:8px 10px;border-bottom:1px solid #0B0C0E22;white-space:nowrap}
 td:first-child{white-space:nowrap}
 footer{background:var(--night);color:#E8EAEDcc;margin-top:56px;font-size:13px}
-footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px;padding:44px 0;font-size:13px}
+footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px;padding:44px 24px;font-size:13px}
 footer a{color:#E8EAED99;text-decoration:none;display:block;margin-top:8px;font-weight:500}
 footer a:hover{color:#E8EAED;text-decoration:none}
 footer .h{font-weight:600;color:#E8EAED;font-size:12.5px;text-transform:uppercase;letter-spacing:.1em}
@@ -126,10 +126,10 @@ ${BODY}
      Product and Company columns are IDENTICAL there; the "Docs" column is this site's own nav, standing in for
      marketing's "Use cases". Change both together (DAS-240). -->
 <footer><div class="wrap cols">
-<div><a class="wm" href="https://pixfaro.com" aria-label="Pixfaro home" style="color:#FDFDFB;display:inline-block;margin-top:0;text-decoration:none"><b>pix</b>faro</a><p style="font-size:12.5px;color:#E8EAED80;margin-top:10px;max-width:240px">Every image model, one port.<br>She Just Works LLC</p></div>
+<div><a class="wm" href="https://pixfaro.com" aria-label="Pixfaro home" style="color:#FDFDFB;display:inline-block;margin-top:0;text-decoration:none"><b>pix</b>faro</a><p style="font-size:12.5px;color:#E8EAED80;margin-top:10px;max-width:240px">Every image model, one port.<br>Operated by <a href="https://shejust.works" style="display:inline;color:#E8EAED99;text-decoration:underline">She Just Works LLC</a></p></div>
 <div><span class="h">Docs</span><a href="#api">REST API</a><a href="#templates">Card templates</a><a href="#mcp">MCP server</a><a href="/llms.txt">llms.txt</a><a href="https://github.com/pixfaro/docs">Source</a></div>
 <div><span class="h">Product</span><a href="https://pixfaro.com/models">Models</a><a href="https://pixfaro.com/pricing">Pricing</a><a href="https://mcp.pixfaro.com">MCP server</a><a href="#mcp">CLI</a><a href="https://pixfaro.com/status">Status</a><a href="https://pixfaro.com/dashboard">Dashboard</a></div>
-<div><span class="h">Company</span><a href="https://docs.pixfaro.com">Docs</a><a href="https://github.com/pixfaro">GitHub</a><a href="mailto:support@pixfaro.com">support@pixfaro.com</a><span style="display:block;margin-top:8px"><a href="https://pixfaro.com/terms" style="display:inline">Terms</a> · <a href="https://pixfaro.com/privacy" style="display:inline">Privacy</a> · <a href="https://pixfaro.com/acceptable-use" style="display:inline">Acceptable Use</a></span></div>
+<div><span class="h">Company</span><a href="https://docs.pixfaro.com">Docs</a><a href="https://github.com/pixfaro">GitHub</a><a href="https://pixfaro.com/support">Support</a><span style="display:block;margin-top:8px"><a href="https://pixfaro.com/terms" style="display:inline">Terms</a> · <a href="https://pixfaro.com/privacy" style="display:inline">Privacy</a> · <a href="https://pixfaro.com/acceptable-use" style="display:inline">Acceptable Use</a> · <a href="https://pixfaro.com/refund" style="display:inline">Refunds</a> · <a href="https://pixfaro.com/dmca" style="display:inline">DMCA</a></span></div>
 </div></footer>
 <script>(()=>{const links=[...document.querySelectorAll('.nav .links a[href^="#"]')];const secs=links.map(a=>document.getElementById(a.hash.slice(1))).filter(Boolean);if(!secs.length)return;const sync=()=>{let cur="";for(const s of secs)if(s.getBoundingClientRect().top<=90)cur=s.id;for(const a of links)a.classList.toggle("on",a.hash.slice(1)===cur)};addEventListener("scroll",sync,{passive:true});addEventListener("hashchange",sync);sync()})()</script>
 </body></html>`;
