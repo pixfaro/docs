@@ -14,9 +14,11 @@
 - New accounts get $1 free credit on email verification (instant for Google/GitHub signups); balance is prepaid via Stripe top-ups (no subscription)
 - Generation requires a verified email (403 email_unverified before that)
 ## Capabilities
-- POST /v1/images/generations {model, prompt, aspect_ratio?, resolution?, overlay?} -> {id: img_…, url, cost, balance_after} — sync, one image per request, hosted URL (never base64)
+- POST /v1/images/generations {model, prompt, aspect_ratio?, resolution?, overlay?} -> 200 {id: img_…, url, cost, balance_after} for sync models, or 202 {job_id, status, poll, eta_s} for async models (mode in GET /v1/models; a 202 is a success) — one image per request, hosted URL (never base64); optional mode: auto|sync|async
+- GET /v1/jobs/:id -> queued|running {job_id,status,eta_s} | succeeded = the 200 body without balance_after | failed {error, charged:false} (auto-refunded); jobs kept 24h, images stay in history; max 10 in flight
+- GET /v1/key -> {key:{name,prefix,last4,scope}, email_verified, balance? (full scope)} — verify a key, any scope, free
 - POST /v1/images/edits {model, image: img_…, instruction} -> same shape; omitted aspect_ratio keeps the source's shape; omitted resolution inherits (and bills at) the source's tier
-- GET /v1/models (public) -> [{id, best_for, p50_ms, price, prices per resolution tier, enabled}] — pick by best_for; enabled:false = coming soon
+- GET /v1/models (public) -> [{id, best_for, p50_ms, price, prices per resolution tier, aspect_ratios, max_prompt_chars, mode: sync|async, enabled}] — pick by best_for; enabled:false = coming soon
 - GET /v1/balance -> {balance} (USD decimal string; needs scope full)
 - Overlay branding: "overlay":"default" applies the account's saved brand kit (PUT /v1/brand-kit); or explicit {text|logo_id, position, opacity…}; logos via POST /v1/logos (transparent PNG ≤1MB)
 - Failed generations are never charged (502 body says "charged": false); 402 insufficient_balance includes balance, needed, topup_url
